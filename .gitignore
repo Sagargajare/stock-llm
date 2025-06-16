@@ -39,7 +39,6 @@ env/
 *.log
 .env.local
 .env.*.local
-static/
 
 # OpenAI API key
 .env
