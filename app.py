@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -9,8 +9,15 @@ from openai import OpenAI
 from sqlalchemy import text
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder='static', static_url_path='')
-CORS(app)  # Enable CORS for all routes
+# Initialize Flask app with static folder configuration
+app = Flask(__name__, 
+    static_folder='static',
+    static_url_path='',
+    template_folder='static'
+)
+
+# Enable CORS for API routes only
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Configure OpenAI
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -198,13 +205,15 @@ def query_stocks():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Serve frontend static files
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    print(f"Serving path: {len(path)}")
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5001)), debug=os.getenv('FLASK_ENV') != 'production')
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5001)))

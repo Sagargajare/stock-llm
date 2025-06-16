@@ -6,21 +6,17 @@ cd frontend
 npm install
 npm run build
 
-# Create static directory if it doesn't exist
-cd ..
-mkdir -p static
-
-# Copy frontend build to static directory
-echo "Copying frontend build to static directory..."
-cp -r frontend/dist/* static/
+# The frontend build is now automatically placed in the static directory
+# No need to manually copy files
 
 # Commit changes
 echo "Committing changes..."
+cd ..
 git add .
 git commit -m "Update static files for deployment"
 
-# Deploy to Heroku
+# Force push to Heroku (since we're serving frontend from backend)
 echo "Deploying to Heroku..."
-git push heroku main
+git push heroku main --force
 
 echo "Deployment complete!" 
