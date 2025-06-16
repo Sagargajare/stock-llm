@@ -1,0 +1,6 @@
+build:
+  languages:
+    - python
+    - nodejs
+run:
+  web: gunicorn app:app 

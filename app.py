@@ -9,14 +9,14 @@ from openai import OpenAI
 from sqlalchemy import text
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder='frontend/dist', static_url_path='')
+app = Flask(__name__, static_folder='static', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
 # Configure OpenAI
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-# PostgreSQL URI
-POSTGRES_URI = os.getenv('POSTGRES_URI')
+# Get PostgreSQL URI from Heroku
+POSTGRES_URI = os.getenv('DATABASE_URL', '').replace('postgres://', 'postgresql://')
 
 # Configure database
 app.config['SQLALCHEMY_DATABASE_URI'] = POSTGRES_URI
